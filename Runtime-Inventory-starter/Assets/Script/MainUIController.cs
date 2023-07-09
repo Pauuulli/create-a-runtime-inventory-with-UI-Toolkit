@@ -4,16 +4,19 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class InventoryUIController : MonoBehaviour
+public class MainUIController : MonoBehaviour
 {
     public List<InventorySlot> InventoryItems = new();
 
     private VisualElement m_Root;
     private VisualElement m_SlotContainer;
+    private VisualElement m_InventoryContainer;
+    
     //Global variable
     private static VisualElement m_GhostIcon;
     private static bool m_IsDragging;
     private static InventorySlot m_OriginalSlot;
+    private static VisualElement m_InventoryToggle;
 
     private void Awake()
     {
@@ -22,6 +25,7 @@ public class InventoryUIController : MonoBehaviour
 
         //Search the root for the SlotContainer Visual Element
         m_SlotContainer = m_Root.Q<VisualElement>("SlotContainer");
+        m_InventoryContainer = m_Root.Q<VisualElement>("InventoryContainer");
 
         //Create InventorySlots and add them as children to the SlotContainer
         for (int i = 0; i < 20; i++)
@@ -36,9 +40,11 @@ public class InventoryUIController : MonoBehaviour
         GameController.OnInventoryChanged += GameController_OnInventoryChanged;
 
         m_GhostIcon = m_Root.Query<VisualElement>("GhostIcon");
-
         m_GhostIcon.RegisterCallback<PointerMoveEvent>(OnPointerMove);
         m_GhostIcon.RegisterCallback<PointerUpEvent>(OnPointerUp);
+
+        m_InventoryToggle = m_Root.Q<VisualElement>("InventoryToggle");
+        m_InventoryToggle.RegisterCallback<ClickEvent>(OnInventoryToggle);
     }
 
     private void GameController_OnInventoryChanged(string[] itemGuid, InventoryChangeType change)
@@ -125,4 +131,10 @@ public class InventoryUIController : MonoBehaviour
         m_GhostIcon.style.visibility = Visibility.Hidden;
 
     }
+
+    private void OnInventoryToggle(ClickEvent evt)
+    {
+        m_InventoryContainer.style.visibility = (m_InventoryContainer.style.visibility == Visibility.Hidden) ? Visibility.Visible : Visibility.Hidden;
+    }
 }
+

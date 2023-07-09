@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Scripting;
 using UnityEngine.UIElements;
 
@@ -46,7 +43,7 @@ public class InventorySlot : VisualElement
         Icon.image = null;
 
         //Start the drag
-        InventoryUIController.StartDrag(evt.position, this);
+        MainUIController.StartDrag(evt.position, this);
     }
 
     #region UXML

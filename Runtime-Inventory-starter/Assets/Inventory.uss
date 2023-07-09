@@ -40,15 +40,15 @@
 }
 
 .slotContainer {
-    width: 96px;
-    height: 96px;
+    width: 64px;
+    height: 64px;
     margin: 5px;
     border-left-color: rgb(48, 48, 48);
     border-right-color: rgb(48, 48, 48);
     border-top-color: rgb(48, 48, 48);
     border-bottom-color: rgb(48, 48, 48);
     background-color: rgb(9, 19, 21);
-    background-image: url('/Assets/WUG/Sprites/ItemSlotBackground.png');
+    background-image: url('project://database/Assets/WUG/Sprites/ItemSlotBackground.png?fileID=21300000&guid=9775dedc597859d4e8a501720a97fac4&type=3#ItemSlotBackground');
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
     border-top-right-radius: 3px;
@@ -59,4 +59,13 @@
     padding: 15px;
     flex-shrink: 0;
     flex-grow: 1;
+}
+
+.GhostIcon {
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0);
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    visibility: hidden;
 }
