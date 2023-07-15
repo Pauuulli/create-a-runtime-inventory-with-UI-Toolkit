@@ -17,6 +17,7 @@ public class MainUIController : MonoBehaviour
     private static bool m_IsDragging;
     private static InventorySlot m_OriginalSlot;
     private static VisualElement m_InventoryToggle;
+    private static VisualElement m_HPValue;
 
     private void Awake()
     {
@@ -45,6 +46,8 @@ public class MainUIController : MonoBehaviour
 
         m_InventoryToggle = m_Root.Q<VisualElement>("InventoryToggle");
         m_InventoryToggle.RegisterCallback<ClickEvent>(OnInventoryToggle);
+
+        m_HPValue = m_Root.Q<VisualElement>("HPValue");
     }
 
     private void GameController_OnInventoryChanged(string[] itemGuid, InventoryChangeType change)
@@ -136,5 +139,12 @@ public class MainUIController : MonoBehaviour
     {
         m_InventoryContainer.style.visibility = (m_InventoryContainer.style.visibility == Visibility.Hidden) ? Visibility.Visible : Visibility.Hidden;
     }
+
+    public static void SetHP(float percent)
+    {
+        m_HPValue.style.width = Length.Percent(percent);
+    }
+
+    
 }
 

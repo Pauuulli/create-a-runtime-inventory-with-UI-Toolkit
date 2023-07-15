@@ -35,6 +35,6 @@
 
 .HP-value {
     flex-grow: 1;
-    background-color: rgb(253, 2, 2);
-    height: auto;
+    background-color: rgb(255, 0, 0);
+    width: 50%;
 }
