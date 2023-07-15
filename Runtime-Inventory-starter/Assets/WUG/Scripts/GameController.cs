@@ -50,6 +50,7 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void PopulateDatabase()
     {
+        
         m_ItemDatabase.Add("8B0EF21A-F2D9-4E6F-8B79-031CA9E202BA", new ItemDetails()
         {
             Name = "History of the Syndicate: 1501 to 1825 ",
@@ -73,7 +74,7 @@ public class GameController : MonoBehaviour
             Icon = IconSprites.FirstOrDefault(x => x.name.Equals("poison")),
             CanDrop = true
         });
-
+        
     }
 
     /// <summary>

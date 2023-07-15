@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ public class MainUIController : MonoBehaviour
     private static InventorySlot m_OriginalSlot;
     private static VisualElement m_InventoryToggle;
     private static VisualElement m_HPValue;
+    private static VisualElement m_MPValue;
+
 
     private void Awake()
     {
@@ -48,6 +51,7 @@ public class MainUIController : MonoBehaviour
         m_InventoryToggle.RegisterCallback<ClickEvent>(OnInventoryToggle);
 
         m_HPValue = m_Root.Q<VisualElement>("HPValue");
+        m_MPValue = m_Root.Q<VisualElement>("MPValue");
     }
 
     private void GameController_OnInventoryChanged(string[] itemGuid, InventoryChangeType change)
@@ -145,6 +149,10 @@ public class MainUIController : MonoBehaviour
         m_HPValue.style.width = Length.Percent(percent);
     }
 
-    
+    public static void SetMP(float percent)
+    {
+        m_MPValue.style.width = Length.Percent(percent);
+    }
+
 }
 

@@ -1,3 +1,5 @@
+//using System.Diagnostics;
+using UnityEngine;
 using UnityEngine.Scripting;
 using UnityEngine.UIElements;
 
@@ -21,8 +23,10 @@ public class InventorySlot : VisualElement
 
     public void HoldItem(ItemDetails item)
     {
+        //Debug.Log($"item guid: {item.GUID}");
         Icon.image = item.Icon.texture;
         ItemGuid = item.GUID;
+        
     }
 
     public void DropItem()
