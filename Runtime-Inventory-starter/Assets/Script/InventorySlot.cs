@@ -8,6 +8,9 @@ public class InventorySlot : VisualElement
     public Image Icon;
     public string ItemGuid = "";
 
+    public delegate void OnDropItemDelegate(string guid);
+    public static event OnDropItemDelegate OnDropItem;
+
     public InventorySlot()
     {
         //Create a new Image element and add it to the root
@@ -15,18 +18,29 @@ public class InventorySlot : VisualElement
         Add(Icon);
 
         //Add USS style properties to the elements
-        Icon.AddToClassList("slotIcon");
-        AddToClassList("slotContainer");
+        Icon.AddToClassList("SlotIcon");
+        AddToClassList("Slot");
 
         RegisterCallback<PointerDownEvent>(OnPointerDown);
+        RegisterCallback<PointerUpEvent>(OnRightClick);
     }
 
+    public void Swap(InventorySlot slot)
+    {
+        InventorySlot temp = new InventorySlot();
+        temp.HoldItem(GameController.GetItemByGuid(this.ItemGuid));
+
+        this.DropItem();
+        this.HoldItem(GameController.GetItemByGuid(slot.ItemGuid));
+
+        slot.DropItem();
+        slot.HoldItem(GameController.GetItemByGuid(temp.ItemGuid));
+    }
     public void HoldItem(ItemDetails item)
     {
         //Debug.Log($"item guid: {item.GUID}");
         Icon.image = item.Icon.texture;
         ItemGuid = item.GUID;
-        
     }
 
     public void DropItem()
@@ -50,6 +64,14 @@ public class InventorySlot : VisualElement
         MainUIController.StartDrag(evt.position, this);
     }
 
+    private void OnRightClick(PointerUpEvent evt)
+    {
+        if (evt.button != 1 || ItemGuid.Equals(""))
+            return;
+
+        // @TODO: Remove item from game controller
+        OnDropItem.Invoke(ItemGuid);
+    }
     #region UXML
     [Preserve]
     public new class UxmlFactory : UxmlFactory<InventorySlot, UxmlTraits> { }

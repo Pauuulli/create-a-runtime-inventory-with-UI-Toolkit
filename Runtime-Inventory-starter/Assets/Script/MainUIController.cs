@@ -12,14 +12,18 @@ public class MainUIController : MonoBehaviour
     private VisualElement m_Root;
     private VisualElement m_SlotContainer;
     private VisualElement m_InventoryContainer;
-    
+
     //Global variable
     private static VisualElement m_GhostIcon;
     private static bool m_IsDragging;
     private static InventorySlot m_OriginalSlot;
-    private static VisualElement m_InventoryToggle;
+    private static Button m_InventoryToggle;
+    private static Button m_AddItem;
     private static VisualElement m_HPValue;
     private static VisualElement m_MPValue;
+
+    public delegate void OnAddItemDelegate();
+    public static event OnAddItemDelegate OnAddItem;
 
 
     private void Awake()
@@ -34,7 +38,7 @@ public class MainUIController : MonoBehaviour
         //Create InventorySlots and add them as children to the SlotContainer
         for (int i = 0; i < 20; i++)
         {
-            InventorySlot item = new ();
+            InventorySlot item = new();
 
             InventoryItems.Add(item);
 
@@ -47,8 +51,12 @@ public class MainUIController : MonoBehaviour
         m_GhostIcon.RegisterCallback<PointerMoveEvent>(OnPointerMove);
         m_GhostIcon.RegisterCallback<PointerUpEvent>(OnPointerUp);
 
-        m_InventoryToggle = m_Root.Q<VisualElement>("InventoryToggle");
+        m_InventoryToggle = m_Root.Q<Button>("InventoryToggler");
         m_InventoryToggle.RegisterCallback<ClickEvent>(OnInventoryToggle);
+
+        m_AddItem = m_Root.Q<Button>("AddItem");
+        m_AddItem.RegisterCallback<ClickEvent>(OnAddItemClick);
+
 
         m_HPValue = m_Root.Q<VisualElement>("HPValue");
         m_MPValue = m_Root.Q<VisualElement>("MPValue");
@@ -62,11 +70,12 @@ public class MainUIController : MonoBehaviour
             if (change == InventoryChangeType.Pickup)
             {
                 var emptySlot = InventoryItems.FirstOrDefault(x => x.ItemGuid.Equals(""));
-
-                if (emptySlot != null)
-                {
-                    emptySlot.HoldItem(GameController.GetItemByGuid(item));
-                }
+                emptySlot?.HoldItem(GameController.GetItemByGuid(item));
+            }
+            else
+            {
+                var targetSlot = InventoryItems.FirstOrDefault(x => x.ItemGuid.Equals(item));
+                targetSlot?.DropItem();
             }
         }
     }
@@ -119,11 +128,25 @@ public class MainUIController : MonoBehaviour
             InventorySlot closestSlot = slots.OrderBy(x => Vector2.Distance
                (x.worldBound.position, m_GhostIcon.worldBound.position)).First();
 
-            //Set the new inventory slot with the data
-            closestSlot.HoldItem(GameController.GetItemByGuid(m_OriginalSlot.ItemGuid));
+            if (m_OriginalSlot.ItemGuid == closestSlot.ItemGuid)
+            {
+                closestSlot.HoldItem(GameController.GetItemByGuid(m_OriginalSlot.ItemGuid));
+            }
+            else if (closestSlot.ItemGuid != "")
+            {
+                m_OriginalSlot.Swap(closestSlot);
+            }
+            else
+            {
+                //Set the new inventory slot with the data
+                closestSlot.HoldItem(GameController.GetItemByGuid(m_OriginalSlot.ItemGuid));
 
-            //Clear the original slot
-            m_OriginalSlot.DropItem();
+                //Clear the original slot
+                m_OriginalSlot.DropItem();
+            }
+
+
+
         }
         //Didn't find any (dragged off the window)
         else
@@ -142,6 +165,12 @@ public class MainUIController : MonoBehaviour
     private void OnInventoryToggle(ClickEvent evt)
     {
         m_InventoryContainer.style.visibility = (m_InventoryContainer.style.visibility == Visibility.Hidden) ? Visibility.Visible : Visibility.Hidden;
+    }
+
+    private void OnAddItemClick(ClickEvent evt)
+    {
+        //GameController_OnInventoryChanged(new string[] { "8B0EF21A-F2D9-4E6F-8B79-031CA9E202BA" }, InventoryChangeType.Pickup);
+        OnAddItem.Invoke();
     }
 
     public static void SetHP(float percent)

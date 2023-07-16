@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [Serializable]
 public class ItemDetails
@@ -12,6 +13,7 @@ public class ItemDetails
     public string GUID;
     public Sprite Icon;
     public bool CanDrop;
+    public bool isPicked;
 }
 
 public enum InventoryChangeType
@@ -36,13 +38,19 @@ public class GameController : MonoBehaviour
     private void Awake()
     {
         PopulateDatabase();
+        MainUIController.OnAddItem += AddItemDemo;
+        InventorySlot.OnDropItem += DropUserItem;
     }
 
     private void Start()
     {
         //Add the ItemDatabase to the players inventory and let the UI know that some items have been picked up
-        m_PlayerInventory.AddRange(m_ItemDatabase.Values);
-        OnInventoryChanged.Invoke(m_PlayerInventory.Select(x=> x.GUID).ToArray(), InventoryChangeType.Pickup);
+        foreach (var item in m_ItemDatabase.Values)
+        {
+            item.isPicked = true;
+            m_PlayerInventory.Add(item);
+        }
+        OnInventoryChanged.Invoke(m_PlayerInventory.Select(x => x.GUID).ToArray(), InventoryChangeType.Pickup);
     }
 
     /// <summary>
@@ -50,13 +58,14 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void PopulateDatabase()
     {
-        
+
         m_ItemDatabase.Add("8B0EF21A-F2D9-4E6F-8B79-031CA9E202BA", new ItemDetails()
         {
             Name = "History of the Syndicate: 1501 to 1825 ",
             GUID = "8B0EF21A-F2D9-4E6F-8B79-031CA9E202BA",
             Icon = IconSprites.FirstOrDefault(x => x.name.Equals("syndicate")),
-            CanDrop = false
+            CanDrop = false,
+            isPicked = false
         });
 
         m_ItemDatabase.Add("992D3386-B743-4CD3-9BB7-0234A057C265", new ItemDetails()
@@ -64,7 +73,8 @@ public class GameController : MonoBehaviour
             Name = "Health Potion",
             GUID = "992D3386-B743-4CD3-9BB7-0234A057C265",
             Icon = IconSprites.FirstOrDefault(x => x.name.Equals("potion")),
-            CanDrop = true
+            CanDrop = true,
+            isPicked = false
         });
 
         m_ItemDatabase.Add("1B9C6CAA-754E-412D-91BF-37F22C9A0E7B", new ItemDetails()
@@ -72,9 +82,10 @@ public class GameController : MonoBehaviour
             Name = "Bottle of Poison",
             GUID = "1B9C6CAA-754E-412D-91BF-37F22C9A0E7B",
             Icon = IconSprites.FirstOrDefault(x => x.name.Equals("poison")),
-            CanDrop = true
+            CanDrop = true,
+            isPicked = false
         });
-        
+
     }
 
     /// <summary>
@@ -92,4 +103,30 @@ public class GameController : MonoBehaviour
         return null;
     }
 
+    public void AddUserItem(string guid)
+    {
+        var newItem = GetItemByGuid(guid);
+        if (newItem.isPicked)
+            return;
+        newItem.isPicked = true;
+        m_PlayerInventory.Add(newItem);
+        OnInventoryChanged.Invoke(new string[] { guid }, InventoryChangeType.Pickup);
+        Debug.Log($"{m_PlayerInventory.Count}");
+    }
+
+    public void DropUserItem(string guid)
+    {
+        var target = GetItemByGuid(guid);
+        if (!target.CanDrop)
+            return;
+        target.isPicked = false;
+        m_PlayerInventory.Remove(target);
+        OnInventoryChanged.Invoke(new string[] { guid }, InventoryChangeType.Drop);
+        Debug.Log($"{m_PlayerInventory.Count}");
+    }
+
+    private void AddItemDemo()
+    {
+        AddUserItem("992D3386-B743-4CD3-9BB7-0234A057C265");
+    }
 }
