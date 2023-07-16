@@ -1,0 +1,28 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/MainUI.uss?fileID=7433441132597879392&amp;guid=c20d5873d7ecf15468957b324e3def5d&amp;type=3#MainUI" />
+    <ui:VisualElement name="StatusContainer" class="status-container">
+        <ui:VisualElement name="HPContainer" class="status-block">
+            <ui:Label tabindex="-1" text="HP" display-tooltip-when-elided="true" name="HPLabel" class="status-label" />
+            <ui:VisualElement name="HPBar" class="status-value-wrapper">
+                <ui:VisualElement name="HPValue" class="status-value hp-value" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="MPContainer" class="status-block">
+            <ui:Label tabindex="-1" text="MP" display-tooltip-when-elided="true" name="MPLabel" class="status-label" />
+            <ui:VisualElement name="MPBar" class="status-value-wrapper">
+                <ui:VisualElement name="MPValue" class="status-value mp-value" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="InventoryContainer" class="inventory-container">
+        <ui:VisualElement name="Inventory" class="Inventory">
+            <ui:Label tabindex="-1" text="Inventory" display-tooltip-when-elided="true" name="Header" class="Header" />
+            <ui:VisualElement name="SlotContainer" class="SlotContainer" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="ButtonContainer" class="ButtonContainer">
+        <ui:Button text="Inventory" display-tooltip-when-elided="true" name="InventoryToggler" class="InventoryToggler" />
+        <ui:Button text="Add item" display-tooltip-when-elided="true" name="AddItem" class="InventoryToggler" />
+     </ui:VisualElement>
+    <ui:VisualElement name="GhostIcon" class="GhostIcon" />
+</ui:UXML>
